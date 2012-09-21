@@ -91,9 +91,9 @@ Brainlove.runRegexRules = function(ar, script) {
 
 Brainlove.compile = function(script) {
 	var compScript = [];
-	var script = Brainlove.runRegexRules(BrainLove.regexRulesBefore, script);
+	var script = Brainlove.runRegexRules(Brainlove.regexRulesBefore, script);
 	var reScript = Brainlove.cleanScript(script);
-	reScript = Brainlove.runRegexRules(BrainLove.regexRulesAfter, reScript);
+	reScript = Brainlove.runRegexRules(Brainlove.regexRulesAfter, reScript);
 	for(var i = 0; i < reScript.length; i++) {
 		var c = reScript[i];
 		var a = Brainlove.commands[c];
@@ -129,7 +129,7 @@ Brainlove.optimize = function(script) {
 					var tot = [];
 					for(var j = 0; j < fnm.length; j++) {
 						var cur = fnm[j];
-						var fnt = (cur.hidden? Brainlove.hiddenCommands: BrainLove.commands)[cur.command];
+						var fnt = (cur.hidden? Brainlove.hiddenCommands: Brainlove.commands)[cur.command];
 						var cmd = Brainlove.commandCopy(cur.command, from+j, fnt);
 						tot.push(cmd);
 					}
@@ -137,7 +137,7 @@ Brainlove.optimize = function(script) {
 					script.splice.apply(script, res);
 					i -= tot.length;
 				} else {
-					var fnt = (fnm.hidden? Brainlove.hiddenCommands: BrainLove.commands)[fnm.command];
+					var fnt = (fnm.hidden? Brainlove.hiddenCommands: Brainlove.commands)[fnm.command];
 					var cmd = Brainlove.commandCopy(fnm.command, from, fnt);
 					script.splice(from, len, cmd);
 					i--;
@@ -184,7 +184,7 @@ Brainlove.run = function(script, state) {
 Brainlove.load = function(script) {
 	var r = {};
 	r.script = script;
-	r.compiled = Brainlove.optimize(BrainLove.compile(script));
+	r.compiled = Brainlove.optimize(Brainlove.compile(script));
 	r.state = {
 		tape: [0],
 		ptr: 0
