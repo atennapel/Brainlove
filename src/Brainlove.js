@@ -234,6 +234,16 @@ Brainlove.addCommand("]", {
 	},
 	stack: false
 });
+Brainlove.addCommand("$", {
+	action: function(state) {
+		state.reg = state.tape[state.ptr];
+	}
+});
+Brainlove.addCommand("!", {
+	action: function(state) {
+		state.tape[state.ptr] = state.reg;
+	}
+});
 
 Brainlove.addCommand("clearCell", {
 	action: function(state) {
