@@ -311,7 +311,7 @@ Brainlove.addCommand("addToNext", {
 		state.tape.setCell(0);
 	},
 	hidden: true
-})
+});
 
 Brainlove.addCompilerRule("[-]", {command: "clearCell", hidden: true});
 Brainlove.addCompilerRule("[->+<]", {command: "addToNext", hidden: true});
