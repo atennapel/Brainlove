@@ -60,7 +60,7 @@ var Brainlove = {};
 Brainlove.commands = {};
 Brainlove.hiddenCommands = {};
 Brainlove.addCommand = function(cmd, obj) {
-	if(obj.hidden == undefined || !obj.hidden)
+	if(obj.hidden == false || obj.hidden == undefined)
 		Brainlove.commands[cmd] = obj;
 	else
 		Brainlove.hiddenCommands[cmd] = obj;
@@ -130,11 +130,12 @@ Brainlove.commandCopy = function(c, i, cmd) {
 	return {
 		command: c,
 		index: i,
-		action: cmd.action,
-		hidden: cmd.hidden,
+		action: cmd.action || false,
+		hidden: cmd.hidden || false,
 		count: 1,
-		afterOpt: cmd.afterOpt,
-		stack: cmd.stack
+		afterOpt: cmd.afterOpt || false,
+		creation: cmd.creation || false,
+		stack: cmd.stack || true
 	};
 }
 
@@ -155,8 +156,8 @@ Brainlove.compile = function(script) {
 		var a = Brainlove.commands[c];
 		if(a != undefined) {
 			var n = Brainlove.commandCopy(c, i, a);
-			if(a.creation != undefined)
-				a.creation(n, reScript);
+			if(n.creation != false)
+				n.creation(n, reScript);
 			compScript.push(n);
 		}
 	}
@@ -210,9 +211,9 @@ Brainlove.optimize = function(script) {
 	for(var i = 0; i < script.length; i++) {
 		var co = script[i];
 		co.index = i;
-		if(co.afterOpt != undefined)
+		if(co.afterOpt != false)
 			ao.push(co);
-		if((co.stack || co.stack == undefined) && ct == co.command) {
+		if(co.stack && ct == co.command) {
 			script[i-1].count++;
 			script.splice(i, 1);
 			i--;
