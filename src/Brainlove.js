@@ -1,3 +1,59 @@
+// Tape object
+var Tape = function(tape, ptr) {
+	this.tape = tape || [0];
+	this.ptr = ptr || 0;
+};
+
+Tape.prototype.extend = function(n) {
+	for(var i = 0; i < n; i++)
+		this.tape.push(0);
+	return this.tape.length;
+};
+
+Tape.prototype.getTapeLength = function() {return this.tape.length};
+
+Tape.prototype.move = function(n) {
+	var n = n || 1;
+	if(n > 0)
+		return this.moveRight(n);
+	else
+		return this.moveLeft(-n);
+}
+
+Tape.prototype.moveLeft = function(n) {
+	var n = n || 1;
+	this.ptr -= n;
+	if(this.ptr >= this.tape.length)
+		this.extend(n);
+	return this.ptr;
+};
+
+Tape.prototype.moveRight = function(n) {
+	var n = n || 1;
+	this.ptr += n;
+	this.ptr = this.ptr < 0? 0: this.ptr;
+	return this.ptr;
+};
+
+Tape.prototype.getPointer = function() {return this.ptr};
+
+Tape.prototype.getCell = function() {return this.tape[this.ptr]};
+
+Tape.prototype.addToCell = function(n, i) {
+	var i = i || this.ptr;
+	if(i >= this.tape.length)
+		this.extend(i - this.tape.length + 1);
+	this.tape[i] += n;
+}
+
+Tape.prototype.setCell = function(n, i) {
+	var i = i || this.ptr;
+	if(i >= this.tape.length)
+		this.extend(i - this.tape.length + 1);
+	this.tape[i] = n;
+}
+
+// Brainlove
 var Brainlove = {};
 
 // Commands
@@ -185,10 +241,7 @@ Brainlove.load = function(script) {
 	var r = {};
 	r.script = script;
 	r.compiled = Brainlove.optimize(Brainlove.compile(script));
-	r.state = {
-		tape: [0],
-		ptr: 0
-	};
+	r.state = {tape: new Tape()};
 	r.run = function() {return Brainlove.run(r.compiled, r.state)};
 	return r;
 };
@@ -196,29 +249,27 @@ Brainlove.load = function(script) {
 // standard commands/rules
 Brainlove.addCommand("+", {
 	action: function(state) {
-		state.tape[state.ptr]++;
+		state.tape.addToCell(1);
 	}
 });
 Brainlove.addCommand("-", {
 	action: function(state) {
-		state.tape[state.ptr]--;
+		state.tape.addToCell(-1);
 	}
 });
 Brainlove.addCommand(">", {
 	action: function(state) {
-		state.ptr++;
-		if(state.tape.length <= state.ptr)
-			state.tape.push(0)
+		state.tape.moveRight(1);
 	}
 });
 Brainlove.addCommand("<", {
 	action: function(state) {
-		state.ptr = state.ptr>0? state.ptr-1: 0;
+		state.tape.moveLeft(1);
 	}
 });
 Brainlove.addCommand("[", {
 	action: function(state) {
-		state.i = state.tape[state.ptr] == 0? state.script[state.i].corBracket: state.i;
+		state.i = state.tape.getCell() == 0? state.script[state.i].corBracket: state.i;
 	},
 	afterOpt: function(self, script) {
 		self.corBracket = Brainlove.nextBracket(script, self.index, "[", "]");
@@ -227,7 +278,7 @@ Brainlove.addCommand("[", {
 });
 Brainlove.addCommand("]", {
 	action: function(state) {
-		state.i = state.tape[state.ptr] != 0? state.script[state.i].corBracket: state.i;
+		state.i = state.tape.getCell() != 0? state.script[state.i].corBracket: state.i;
 	},
 	afterOpt: function(self, script) {
 		self.corBracket = Brainlove.prevBracket(script, self.index, "[", "]");
@@ -236,20 +287,28 @@ Brainlove.addCommand("]", {
 });
 Brainlove.addCommand("$", {
 	action: function(state) {
-		state.reg = state.tape[state.ptr];
+		state.reg = state.tape.getCell();
 	}
 });
 Brainlove.addCommand("!", {
 	action: function(state) {
-		state.tape[state.ptr] = state.reg;
+		state.tape.setCell(state.reg);
 	}
 });
 
 Brainlove.addCommand("clearCell", {
 	action: function(state) {
-		state.tape[state.ptr] = 0;
+		state.tape.setCell(0);
 	},
 	hidden: true
 });
+Brainlove.addCommand("addToNext", {
+	action: function(state) {
+		state.tape.addToCell(state.tape.getCell(), state.tape.getPointer()+1);
+		state.tape.setCell(0);
+	},
+	hidden: true
+})
 
 Brainlove.addCompilerRule("[-]", {command: "clearCell", hidden: true});
+Brainlove.addCompilerRule("[->+<]", {command: "addToNext", hidden: true});

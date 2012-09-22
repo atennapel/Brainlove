@@ -6,7 +6,7 @@
 		<script type="text/javascript">
 			Brainlove.addCommand(".", {
 				action: function(state) {
-					alert(state.tape[state.ptr]);
+					alert(state.tape.getCell());
 				}
 			});
 			Brainlove.addCommand("d", {
@@ -14,7 +14,7 @@
 					alert(state.tape)
 				}
 			});
-			console.log(Brainlove.load("+[$>![->![->+<]<]>>.[-]<<<+]").run());
+			console.log(Brainlove.load("+++$[->![->+<]<]>>.[-]").run());
 		</script>
 	</body>
 </html>
