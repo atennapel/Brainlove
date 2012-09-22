@@ -4,6 +4,11 @@ var Tape = function(tape, ptr) {
 	this.ptr = ptr || 0;
 };
 
+Tape.prototype.extendCheck = function(i) {
+	if(i >= this.tape.length)
+		this.extend(i - this.tape.length + 1);
+}
+
 Tape.prototype.extend = function(n) {
 	for(var i = 0; i < n; i++)
 		this.tape.push(0);
@@ -23,15 +28,14 @@ Tape.prototype.move = function(n) {
 Tape.prototype.moveLeft = function(n) {
 	var n = n || 1;
 	this.ptr -= n;
-	if(this.ptr >= this.tape.length)
-		this.extend(n);
+	this.ptr = this.ptr < 0? 0: this.ptr;
 	return this.ptr;
 };
 
 Tape.prototype.moveRight = function(n) {
 	var n = n || 1;
 	this.ptr += n;
-	this.ptr = this.ptr < 0? 0: this.ptr;
+	this.extendCheck(this.ptr);
 	return this.ptr;
 };
 
@@ -41,15 +45,13 @@ Tape.prototype.getCell = function() {return this.tape[this.ptr]};
 
 Tape.prototype.addToCell = function(n, i) {
 	var i = i || this.ptr;
-	if(i >= this.tape.length)
-		this.extend(i - this.tape.length + 1);
+	this.extendCheck(i);
 	this.tape[i] += n;
 }
 
 Tape.prototype.setCell = function(n, i) {
 	var i = i || this.ptr;
-	if(i >= this.tape.length)
-		this.extend(i - this.tape.length + 1);
+	this.extendCheck(i);
 	this.tape[i] = n;
 }
 
@@ -154,9 +156,9 @@ Brainlove.compile = function(script) {
 	for(var i = 0; i < reScript.length; i++) {
 		var c = reScript[i];
 		var a = Brainlove.commands[c];
-		if(a != undefined) {
+		if(a !== undefined) {
 			var n = Brainlove.commandCopy(c, i, a);
-			if(n.creation != false)
+			if(n.creation !== false)
 				n.creation(n, reScript);
 			compScript.push(n);
 		}
@@ -211,7 +213,7 @@ Brainlove.optimize = function(script) {
 	for(var i = 0; i < script.length; i++) {
 		var co = script[i];
 		co.index = i;
-		if(co.afterOpt != false)
+		if(co.afterOpt !== false)
 			ao.push(co);
 		if(co.stack && ct === co.command) {
 			script[i-1].count++;
@@ -279,7 +281,7 @@ Brainlove.addCommand("[", {
 });
 Brainlove.addCommand("]", {
 	action: function(state) {
-		state.i = state.tape.getCell() != 0? state.script[state.i].corBracket: state.i;
+		state.i = state.tape.getCell() !== 0? state.script[state.i].corBracket: state.i;
 	},
 	afterOpt: function(self, script) {
 		self.corBracket = Brainlove.prevBracket(script, self.index, "[", "]");

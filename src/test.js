@@ -12,10 +12,11 @@ Test.runTests = function(names) {
 	for(var i = 0; i < names.length; i++) {
 		var k = names[i];
 		var c = Test.tests[k];
+		var r = c.fn();
 		if(c.strict)
-			Test.results[k] = c.fn() === c.exp? Test.passValue: Test.failValue;
+			Test.results[k] = r === c.exp? Test.passValue: Test.failValue;
 		else
-			Test.results[k] = c.fn() == c.exp? Test.passValue: Test.failValue;
+			Test.results[k] = r == c.exp? Test.passValue: Test.failValue;
 	}
 	return Test.results;
 }
@@ -24,10 +25,11 @@ Test.runAllTests = function() {
 	Test.results = {};
 	for(var k in Test.tests) {
 		var c = Test.tests[k];
+		var r = c.fn();
 		if(c.strict)
-			Test.results[k] = c.fn() === c.exp? Test.passValue: Test.failValue;
+			Test.results[k] = r === c.exp? Test.passValue: Test.failValue;
 		else
-			Test.results[k] = c.fn() == c.exp? Test.passValue: Test.failValue;
+			Test.results[k] = r == c.exp? Test.passValue: Test.failValue;
 	}
 	return Test.results;
 }
@@ -48,3 +50,7 @@ Test.addTest("Basic 3", function() {
 Test.addTest("Basic 4", function() {
 	return Brainlove.load("+++$[->![->+<]<]>>$[-]>!").run().tape.tape.toString();
 }, [0, 0, 0, 9].toString());
+
+Test.addTest("Basic 5", function() {
+	return Brainlove.load("++>++>++<<[[-]>]").run().tape.tape.toString();
+}, [0, 0, 0, 0].toString());
