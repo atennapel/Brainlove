@@ -60,7 +60,7 @@ var Brainlove = {};
 Brainlove.commands = {};
 Brainlove.hiddenCommands = {};
 Brainlove.addCommand = function(cmd, obj) {
-	if(obj.hidden == false || obj.hidden == undefined)
+	if(obj.hidden === false || obj.hidden === undefined)
 		Brainlove.commands[cmd] = obj;
 	else
 		Brainlove.hiddenCommands[cmd] = obj;
@@ -88,11 +88,11 @@ Brainlove.nextBracket = function(script, index, openb, closeb) {
 	var n = 1;
 	for(var i = index+1; i < script.length; i++) {
 		var c = script[i];
-		if(c.command == openb) {
+		if(c.command === openb) {
 			n++;
-		} else if(c.command == closeb) {
+		} else if(c.command === closeb) {
 			n--;
-			if(n == 0)
+			if(n === 0)
 				return i;
 		}
 	}
@@ -102,11 +102,11 @@ Brainlove.prevBracket = function(script, index, openb, closeb) {
 	var n = 1;
 	for(var i = index-1; i >= 0; i--) {
 		var c = script[i];
-		if(c.command == openb) {
+		if(c.command === openb) {
 			n--;
-			if(n == 0)
+			if(n === 0)
 				return i; 
-		} else if(c.command == closeb) {
+		} else if(c.command === closeb) {
 			n++;
 		}
 	}
@@ -135,7 +135,7 @@ Brainlove.commandCopy = function(c, i, cmd) {
 		count: 1,
 		afterOpt: cmd.afterOpt || false,
 		creation: cmd.creation || false,
-		stack: cmd.stack || true
+		stack: cmd.stack == undefined? true: cmd.stack
 	};
 }
 
@@ -168,7 +168,7 @@ Brainlove.optimize = function(script) {
 	// compiler rules
 	function match(s) {
 		for(var i = 0; i < Brainlove.compilerRulesKeys.length; i++) {
-			if(s == Brainlove.compilerRulesKeys[i].substring(0, s.length))
+			if(s === Brainlove.compilerRulesKeys[i].substring(0, s.length))
 				return i;
 		}
 		return -1;
@@ -178,7 +178,7 @@ Brainlove.optimize = function(script) {
 		str += script[i].command;
 		var mt = match(str);
 		if(mt >= 0) {
-			if(str == Brainlove.compilerRulesKeys[mt]) {
+			if(str === Brainlove.compilerRulesKeys[mt]) {
 				var len = str.length;
 				var from = i-len+1;
 				var fnm = Brainlove.compilerRules[str];
@@ -213,7 +213,7 @@ Brainlove.optimize = function(script) {
 		co.index = i;
 		if(co.afterOpt != false)
 			ao.push(co);
-		if(co.stack && ct == co.command) {
+		if(co.stack && ct === co.command) {
 			script[i-1].count++;
 			script.splice(i, 1);
 			i--;
@@ -270,7 +270,7 @@ Brainlove.addCommand("<", {
 });
 Brainlove.addCommand("[", {
 	action: function(state) {
-		state.i = state.tape.getCell() == 0? state.script[state.i].corBracket: state.i;
+		state.i = state.tape.getCell() === 0? state.script[state.i].corBracket: state.i;
 	},
 	afterOpt: function(self, script) {
 		self.corBracket = Brainlove.nextBracket(script, self.index, "[", "]");

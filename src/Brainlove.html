@@ -1,20 +1,11 @@
 <html>
 	<head>
 		<script src="Brainlove.js"></script>
+		<script src="test.js"></script>
 	</head>
 	<body>
 		<script type="text/javascript">
-			Brainlove.addCommand(".", {
-				action: function(state) {
-					alert(state.tape.getCell());
-				}
-			});
-			Brainlove.addCommand("d", {
-				action: function(state) {
-					alert(state.tape)
-				}
-			});
-			console.log(Brainlove.load("+++$[->![->+<]<]>>.[-]").run());
+			console.log(Test.runAllTests());
 		</script>
 	</body>
 </html>
