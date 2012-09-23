@@ -38,29 +38,25 @@ Test.runAllTests = function() {
 Test.addTest("Basic 1", function() {
 	return Brainlove.load("+>++>+++").run().tape.tape.toString();
 }, [1, 2, 3].toString());
-
 Test.addTest("Basic 2", function() {
 	return Brainlove.load("+++[->+<]").run().tape.tape.toString();
 }, [0, 3].toString());
-
 Test.addTest("Basic 3", function() {
 	return Brainlove.load("+++[>+<-]").run().tape.tape.toString();
 }, [0, 3].toString());
-
 Test.addTest("Basic 4", function() {
 	return Brainlove.load("+++$[->![->+<]<]>>$[-]>!").run().tape.tape.toString();
 }, [0, 0, 0, 9].toString());
-
 Test.addTest("Basic 5", function() {
 	return Brainlove.load("++>++>++<<[[-]>]").run().tape.tape.toString();
 }, [0, 0, 0, 0].toString());
-
 Test.addTest("Function 1", Brainlove.function("+>++>+++"), 3);
-
 Test.addTest("Function 2", function() {
 	return Brainlove.function("$[->![->+<]<]>>")(3);
 }, 9);
-
+Test.addTest("Function 3", function() {
+	return Brainlove.function("[->+<]>[->+<]>")(1, 2, 3);
+}, 6);
 Test.addTest("addCommand/deleteCommand", function() {
 	Brainlove.addCommand("a", {
 		action: function(state) {
