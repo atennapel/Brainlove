@@ -244,26 +244,29 @@ Brainlove.run = function(script, state) {
 	return state;
 };
 
-Brainlove.load = function(script, tape, ptr) {
+Brainlove.load = function(script, tapel, ptrl) {
 	var r = {};
 	r.script = script;
 	r.compiled = Brainlove.optimize(Brainlove.compile(script));
-	r.state = {tape: new Tape(tape, ptr)};
-	r.state.setExtendingValue = function(n) {
-		r.state.tape.extendingValue = n;
-	}
-	r.state.return = function(i) {
-		var i = i || r.state.tape.ptr;
-		return r.state.tape.tape[i];
-	}
-	r.run = function() {return Brainlove.run(r.compiled, r.state)};
+	r.state = {};
+	r.run = function(tape, ptr) {
+		var t = tape || tapel;
+		var p = ptr || ptrl;
+		r.state.tape = new Tape(t, p);
+		r.state.return = function(i) {
+			var i = i || r.state.tape.ptr;
+			return r.state.tape.tape[i];
+		}
+		return Brainlove.run(r.compiled, r.state)
+	};
 	return r;
 };
 
 Brainlove.function = function(script, tape, ptr) {
 	var r = Brainlove.load(script, tape, ptr);
-	return function(i) {
-		return r.run().return(i);
+	return function() {
+		var args = Array.prototype.slice.call(arguments);
+		return r.run(args).return();
 	}
 }
 

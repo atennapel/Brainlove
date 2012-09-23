@@ -22,6 +22,7 @@ var finalState = loaded.run();
 
 var fn = Brainlove.function("+>++>+++");
 fn(); // 3
+Brainlove.function("$[->![->+<]<]>>")(3); // 9
 ```
 
 # Extending Brainlove
