@@ -2,6 +2,7 @@
 var Tape = function(tape, ptr) {
 	this.tape = tape || [0];
 	this.ptr = ptr || 0;
+	this.extendingValue = 0;
 };
 
 Tape.prototype.extendCheck = function(i) {
@@ -11,7 +12,7 @@ Tape.prototype.extendCheck = function(i) {
 
 Tape.prototype.extend = function(n) {
 	for(var i = 0; i < n; i++)
-		this.tape.push(0);
+		this.tape.push(this.extendingValue);
 	return this.tape.length;
 };
 
@@ -67,6 +68,9 @@ Brainlove.addCommand = function(cmd, obj) {
 	else
 		Brainlove.hiddenCommands[cmd] = obj;
 };
+Brainlove.deleteCommand = function(cmd) {
+	delete Brainlove.commands[cmd];
+}
 
 // CompilerRules
 Brainlove.compilerRules = {};
@@ -240,14 +244,28 @@ Brainlove.run = function(script, state) {
 	return state;
 };
 
-Brainlove.load = function(script) {
+Brainlove.load = function(script, tape, ptr) {
 	var r = {};
 	r.script = script;
 	r.compiled = Brainlove.optimize(Brainlove.compile(script));
-	r.state = {tape: new Tape()};
+	r.state = {tape: new Tape(tape, ptr)};
+	r.state.setExtendingValue = function(n) {
+		r.state.tape.extendingValue = n;
+	}
+	r.state.return = function(i) {
+		var i = i || r.state.tape.ptr;
+		return r.state.tape.tape[i];
+	}
 	r.run = function() {return Brainlove.run(r.compiled, r.state)};
 	return r;
 };
+
+Brainlove.function = function(script, tape, ptr) {
+	var r = Brainlove.load(script, tape, ptr);
+	return function(i) {
+		return r.run().return(i);
+	}
+}
 
 // standard commands/rules
 Brainlove.addCommand("+", {

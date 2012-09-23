@@ -54,3 +54,22 @@ Test.addTest("Basic 4", function() {
 Test.addTest("Basic 5", function() {
 	return Brainlove.load("++>++>++<<[[-]>]").run().tape.tape.toString();
 }, [0, 0, 0, 0].toString());
+
+Test.addTest("Function", Brainlove.function("+>++>+++"), 3);
+
+Test.addTest("addCommand/deleteCommand", function() {
+	Brainlove.addCommand("a", {
+		action: function(state) {
+			state.tape.setCell("a");
+		}
+	});
+	var r = Brainlove.function("+>a")();
+	Brainlove.deleteCommand("a");
+	return r;
+}, "a");
+
+Test.addTest("extendingValue", function() {
+	var r = Brainlove.load("+>");
+	r.state.setExtendingValue("a");
+	return r.run().return();
+}, "a");
