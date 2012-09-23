@@ -3,33 +3,51 @@ Brainlove
 
 A Brainfuck derivative in JavaScript.
 
-# Usage
+# The language
+## Commands
+```
++		add 1 to the current cell
+- 	decrease 1 to the current cell
+> 	move right on the tape
+< 	move left on the tape
+[] 	while the current cell is not 0, do the things in between the brackets
+$ 	set the register to the current cell's value
+! 	set the current cell to the register's value
+```
 ## Basic Usage
-	var script = "+>++>+++<<[[-]>]";
-	var loaded = Brainlove.load(script);
-	var finalState = loaded.run();
-Load will load a script and compile it to an intermediate form, some small optimalizations will also be done.
-Run will run the compiled script and returns an object containing the final state (pointer, tape etc.) of the program.
+```javascript
+var script = "+>++>+++<<[[-]>]";
+var loaded = Brainlove.load(script);
+var finalState = loaded.run();
 
+var fn = Brainlove.function("+>++>+++");
+fn(); // 3
+```
+
+# Extending Brainlove
 ## Adding commands
-	Brainlove.addCommand("@", {
-		action: function(state) {
-			console.log(state);	
-		}
-	});
+```javascript
+Brainlove.addCommand("@", {
+	action: function(state) {
+		console.log(state);	
+	}
+});
+```
 
 ## Adding optimalizations
-	Brainlove.addCommand("addToPrev", {
-		action: function(state) {
-			var curCellAmount = state.tape.getCell();
-			state.tape.addToCell(curCellAmount, state.tape.getPointer()-1);
-			state.tape.setCell(0);
-		},
-		hidden: true
-	})
-	Brainlove.addCompilerRule("[-<+>]", {
-		command: "addToPrev",
-		hidden: true
-	});
+```javascript
+Brainlove.addCommand("addToPrev", {
+	action: function(state) {
+		var curCellAmount = state.tape.getCell();
+		state.tape.addToCell(curCellAmount, state.tape.getPointer()-1);
+		state.tape.setCell(0);
+	},
+	hidden: true
+})
+Brainlove.addCompilerRule("[-<+>]", {
+	command: "addToPrev",
+	hidden: true
+});
+```
 
 More information coming soon!
