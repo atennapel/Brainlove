@@ -26,10 +26,15 @@ Test.runAllTests = function() {
 	for(var k in Test.tests) {
 		var c = Test.tests[k];
 		var r = c.fn();
+		var o = {
+			expected: c.exp,
+			result: r
+		};
 		if(c.strict)
-			Test.results[k] = r === c.exp? Test.passValue: Test.failValue;
+			o.passed = r === c.exp? Test.passValue: Test.failValue;
 		else
-			Test.results[k] = r == c.exp? Test.passValue: Test.failValue;
+			o.passed = r == c.exp? Test.passValue: Test.failValue;
+		Test.results[k] = o;
 	}
 	return Test.results;
 }
@@ -67,3 +72,10 @@ Test.addTest("addCommand/deleteCommand", function() {
 	Brainlove.deleteCommand("a");
 	return r;
 }, "a");
+Test.addTest("Null 1", Brainlove.function("0~"), null);
+Test.addTest("Null 2", Brainlove.function("5~~"), 0);
+Test.addTest("Null 3", Brainlove.function("5{~}"), null);
+Test.addTest("Null 4", function() {
+	return Brainlove.load("+>++>+++>0~").run().tape.tape.toString();
+}, [1, 2, 3, null].toString());
+Test.addTest("Null 5", Brainlove.function("~"), null);

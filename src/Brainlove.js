@@ -309,6 +309,24 @@ Brainlove.addCommand("]", {
 	},
 	stack: false
 });
+Brainlove.addCommand("{", {
+	action: function(state) {
+		state.i = state.tape.getCell() === null? state.script[state.i].corBracket: state.i;
+	},
+	afterOpt: function(self, script) {
+		self.corBracket = Brainlove.nextBracket(script, self.index, "{", "}");
+	},
+	stack: false
+});
+Brainlove.addCommand("}", {
+	action: function(state) {
+		state.i = state.tape.getCell() !== null? state.script[state.i].corBracket: state.i;
+	},
+	afterOpt: function(self, script) {
+		self.corBracket = Brainlove.prevBracket(script, self.index, "{", "}");
+	},
+	stack: false
+});
 Brainlove.addCommand("$", {
 	action: function(state) {
 		state.reg = state.tape.getCell();
@@ -317,6 +335,11 @@ Brainlove.addCommand("$", {
 Brainlove.addCommand("!", {
 	action: function(state) {
 		state.tape.setCell(state.reg);
+	}
+});
+Brainlove.addCommand("~", {
+	action: function(state) {
+		state.tape.setCell(state.tape.getCell() === null? 0: null);
 	}
 });
 

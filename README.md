@@ -11,6 +11,8 @@ A Brainfuck derivative in JavaScript.
 > 	move right on the tape
 < 	move left on the tape
 [] 	while the current cell is not 0, do the things in between the brackets
+{} 	while the current cell is not null, do the things in between the brackets
+~ 	if the cell contains null then change to 0, else null.
 $ 	set the register to the current cell's value
 ! 	set the current cell to the register's value
 ```
