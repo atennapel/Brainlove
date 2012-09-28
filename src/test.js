@@ -88,3 +88,8 @@ Test.addTest("Null 6", function() {
 	var x = Brainlove.load("+>++>+++>~<<<{~>}").run();
 	return x.tape.tape.toString();
 }, [null, null, null, null].toString());
+Test.addTest("Null 7", function() {
+	var x = Brainlove.load("+>++>+++>~<<<{+>}").run();
+	return x.tape.tape.toString();
+}, [2, 3, 4, null].toString());
+Test.addTest("Null 8", Brainlove.function("+>++>+++>~<<<>{<[->+<]>>}<"), 6);

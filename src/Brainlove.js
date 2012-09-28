@@ -244,6 +244,9 @@ Brainlove.run = function(script, state) {
 		var cur = script[state.i];
 		for(var c = 0; c < cur.count; c++)
 			cur.action(state);
+		alert(state.i);	
+		alert(JSON.stringify(cur));
+		alert(JSON.stringify(state));
 	}
 	return state;
 };
