@@ -1,7 +1,11 @@
+function undefinedCheck(x, y) {
+	return x === undefined? y: x;
+}
+
 // Tape object
 var Tape = function(tape, ptr) {
-	this.tape = tape || [0];
-	this.ptr = ptr || 0;
+	this.tape = undefinedCheck(tape, [0]);
+	this.ptr = undefinedCheck(ptr, 0);
 	this.extendingValue = 0;
 };
 
@@ -136,12 +140,12 @@ Brainlove.commandCopy = function(c, i, cmd) {
 	return {
 		command: c,
 		index: i,
-		action: cmd.action || false,
-		hidden: cmd.hidden || false,
+		action: undefinedCheck(cmd.action, false),
+		hidden: undefinedCheck(cmd.hidden, false),
 		count: 1,
-		afterOpt: cmd.afterOpt || false,
-		creation: cmd.creation || false,
-		stack: cmd.stack == undefined? true: cmd.stack
+		afterOpt: undefinedCheck(cmd.afterOpt, false),
+		creation: undefinedCheck(cmd.creation, false),
+		stack: undefinedCheck(cmd.stack, true)
 	};
 }
 
@@ -265,12 +269,12 @@ Brainlove.load = function(script, tapel, ptrl) {
 Brainlove.function = function(script, tape, ptr) {
 	var r = Brainlove.load(script, tape, ptr);
 	return function() {
-		var args = Array.prototype.slice.call(arguments);
+		var args = arguments.length == 0? undefined: Array.prototype.slice.call(arguments);
 		return r.run(args).return();
 	}
 }
 
-// standard commands/rules
+// standard commands/rules 
 Brainlove.addCommand("+", {
 	action: function(state) {
 		state.tape.addToCell(1);

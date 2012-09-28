@@ -23,6 +23,7 @@ Test.runTests = function(names) {
 
 Test.runAllTests = function() {
 	Test.results = {};
+	var all = {};
 	for(var k in Test.tests) {
 		var c = Test.tests[k];
 		var r = c.fn();
@@ -30,11 +31,15 @@ Test.runAllTests = function() {
 			expected: c.exp,
 			result: r
 		};
+		var s;
 		if(c.strict)
-			o.passed = r === c.exp? Test.passValue: Test.failValue;
+			s = r === c.exp? Test.passValue: Test.failValue;
 		else
-			o.passed = r == c.exp? Test.passValue: Test.failValue;
+			s = r == c.exp? Test.passValue: Test.failValue;
+		o.passed = s;
+		all[k] = s;
 		Test.results[k] = o;
+		Test.results._all = all;
 	}
 	return Test.results;
 }
@@ -72,10 +77,14 @@ Test.addTest("addCommand/deleteCommand", function() {
 	Brainlove.deleteCommand("a");
 	return r;
 }, "a");
-Test.addTest("Null 1", Brainlove.function("0~"), null);
-Test.addTest("Null 2", Brainlove.function("5~~"), 0);
-Test.addTest("Null 3", Brainlove.function("5{~}"), null);
+Test.addTest("Null 1", Brainlove.function("~"), null);
+Test.addTest("Null 2", Brainlove.function("~~"), 0);
+Test.addTest("Null 3", Brainlove.function("{~}"), null);
 Test.addTest("Null 4", function() {
-	return Brainlove.load("+>++>+++>0~").run().tape.tape.toString();
+	return Brainlove.load("+>++>+++>~").run().tape.tape.toString();
 }, [1, 2, 3, null].toString());
-Test.addTest("Null 5", Brainlove.function("~"), null);
+Test.addTest("Null 5", Brainlove.function("~{~}"), null);
+Test.addTest("Null 6", function() {
+	var x = Brainlove.load("+>++>+++>~<<<{~>}").run();
+	return x.tape.tape.toString();
+}, [null, null, null, null].toString());
